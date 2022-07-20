@@ -1,0 +1,6 @@
+catboost==1.0.6
+lightgbm==3.3.2
+numpy==1.23.1
+pandas==1.4.3
+scikit-learn==1.1.1
+xgboost==1.6.1
