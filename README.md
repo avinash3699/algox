@@ -4,8 +4,8 @@
 
 # Features
 
-* Compare numerous algorithms' metrics. 
-* Desired algorithms can be compared by specifying their names, if not all the algorithms need to be compared. 
+* Compares numerous algorithms' metrics. 
+* Desired algorithms can be compared by specifying their names, if not, all the algorithms need to be compared. 
 * Sort the output based on a metric in both ascending and descending order. 
 * Download the output as a .csv file.
 
