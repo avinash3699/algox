@@ -8,6 +8,7 @@ from sklearn.metrics import (
 )
 import warnings
 warnings.filterwarnings('ignore')
+import matplotlib.pyplot as plt
 
 from .regressors import (
     Linear,
@@ -106,15 +107,18 @@ class Regression:
 
     metricsTable = pd.DataFrame(columns = ["Algorithm", "MAE", "MSE", "RMSE", "RMSLE", "R2 Score"])
     
+    
     def __init__(self, dataset:pd.DataFrame, test_size:float = 1/3):
         self.dataset = dataset 
         self.test_size = test_size
         self.splitDataset()
     
+
     def splitDataset(self):
         features = self.dataset.iloc[:, :-1]
         labels = self.dataset.iloc[:, -1]
         self.featuresTraining, self.featuresTesting, self.labelsTraining, self.labelsTesting = train_test_split(features, labels, test_size = self.test_size, random_state = 9)
+
 
     def getMetrics(self, algorithms:list = []):
         if not algorithms:
@@ -129,7 +133,8 @@ class Regression:
                 self.updateMetricsTable(self.labelsTesting, y_pred, algo)
             except Exception as e:
                 print(f"\nError - {algo.getName()}: {e}")
-            
+
+
     def updateMetricsTable(self, y_true:pd.Series, y_pred:np.ndarray, algorithm:any):
         mae = mean_absolute_error(y_true, y_pred)
         mse = mean_squared_error(y_true, y_pred)
@@ -140,6 +145,7 @@ class Regression:
             
         self.metricsTable = self.metricsTable.append(metrics, ignore_index=True)
     
+
     def displayMetricsTable(self, algorithms:list = [], sortBy:str = None, ascending:bool = False, download:bool = False):
         pd.options.display.max_columns = 6
         pd.options.display.max_colwidth = 35
@@ -159,6 +165,7 @@ class Regression:
              self.metricsTable.to_csv("metrics.csv", index = False)
              print("Download successful")
 
+
     def displayDocumentationLinks(self, algorithms:list = []):
         if not algorithms:
             # algorithms = self.algorithms
@@ -169,3 +176,22 @@ class Regression:
         print()
         for algo in algorithms:
             print(f"{algo.getName()}: {algo.getDocumentationLink()}")
+
+
+    def visualize(self, metric:str = None, top:int = 10):
+        metricsTable = self.metricsTable.sort_values(metric, ascending = False)
+
+        x = metricsTable["Algorithm"].head(top)
+        y = metricsTable[metric].head(top)
+
+        fig = plt.figure(figsize = (12, 7))
+
+        # manager = plt.get_current_fig_manager()
+        # manager.full_screen_toggle()
+
+        plt.barh(x, y, color ='green')
+        
+        plt.ylabel("Algorithm Name")
+        plt.xlabel(metric)
+        plt.title("Comparison of Algorithms")
+        plt.show()
