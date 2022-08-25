@@ -11,6 +11,7 @@ from sklearn.metrics import (
 )
 import warnings
 warnings.filterwarnings('ignore')
+import matplotlib.pyplot as plt
 
 from .classifiers import (
     Logistic,
@@ -132,3 +133,21 @@ class Classification:
             algorithms = [self.algorithms[algo] for algo in algorithms]
         for algo in algorithms:
             print(algo.getName(), ":", algo.getDocumentationLink())
+
+    def visualize(self, metric:str = None, top:int = 10):
+        metricsTable = self.metricsTable.sort_values(metric, ascending = False)
+
+        x = metricsTable["Algorithm"].head(top)
+        y = metricsTable[metric].head(top)
+
+        fig = plt.figure(figsize = (12, 7))
+
+        # manager = plt.get_current_fig_manager()
+        # manager.full_screen_toggle()
+
+        plt.barh(x, y, color ='green')
+        
+        plt.ylabel("Algorithm Name")
+        plt.xlabel(metric)
+        plt.title("Comparison of Algorithms")
+        plt.show()
